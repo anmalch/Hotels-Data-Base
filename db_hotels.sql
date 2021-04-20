@@ -332,9 +332,9 @@ LOCK TABLES order_details WRITE;
 INSERT INTO 
   order_details
 VALUES 
-  (1, 8, 'breakfast', '150', 'EUR', '2020-07-18 08:04:50'),
-  (2, 9, 'breakfast', '95', 'EUR', '2021-01-15 18:31:10'),
-  (3, 10, 'mini-bar coca cola', '3', 'EUR', '2019-05-09 07:56:31');
+  (1, 8, 'breakfast', 150, 'EUR', '2020-07-18 08:04:50'),
+  (2, 9, 'breakfast', 95, 'EUR', '2021-01-15 18:31:10'),
+  (3, 10, 'mini-bar coca cola', 3, 'EUR', '2019-05-09 07:56:31');
 UNLOCK TABLES; 
 
 
