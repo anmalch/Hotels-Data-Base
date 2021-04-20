@@ -281,7 +281,6 @@ CREATE TABLE orders(
   number_of_adult INT UNSIGNED NOT NULL,
   number_of_children INT UNSIGNED DEFAULT NULL,
   amount INT(10) NOT NULL,
-  extra_amount INT(10) DEFAULT NULL,
   currency VARCHAR(10) NOT NULL,
   is_paid TINYINT(1) DEFAULT '0', -- paid/not paid
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -299,16 +298,16 @@ LOCK TABLES orders WRITE;
 INSERT INTO 
   orders 
 VALUES 
-  (1, 10, 'Remus', 'Lupin', 'Piazza di Trevi 1', 'Rome', 00187, 'Italy', '39060608', 10, 7, 1, 2, 1, 720, 0, 'EUR', 1, '2021-01-15 09:25:20'),
-  (2, 5,  'Lord', 'Voldemort', 'Tverskoy District 1', 'Moscow', 103132, 'Russia', '74956970349', 18, 6, 2, 1, 0, 426, 0,  'EUR', 0, '2020-06-04 05:26:29'),
-  (3, 3,  'Ron', 'Weasley','Panoramastrasse 1A', 'Berlin', 10178, 'Germany', '030247575875', 20, 1, 2, 1, 0, 108, 0, 'EUR', 1, '2019-05-05 11:26:56'),
-  (4, 10, 'Remus', 'Lupin','Piazza di Trevi 1','Rome', 00187, 'Italy', '39060608', 18, 4, 10, 1, 0, 1420, 0, 'EUR', 0, '2020-01-21 12:20:50'),
-  (5, 4,  'Draco', 'Malfoy','20 W 34th St', 'New York', 10001, 'USA', '12127363100', 6, 5, 6, 2, 2, 1008, 0, 'EUR', 0, '2013-09-23 14:45:01'),
-  (6, 2,  'Hermine','Granger', 'Karlstrasse 3','Vienna', 1010, 'Austria', '431711360', 13, 2, 3, 2, 0, 870, 0, 'EUR', 1, '2021-03-26 08:01:01'), 
-  (7, 1,  'Harry', 'Potter', 'Westminster 1','London', 22222, 'England', '442072194272', 18, 3, 2, 1, 0, 284, 0, 'EUR', 0, '2020-06-03 15:34:20'),
-  (8, 9,  'Severus', 'Snape','Carrer de Mallorca 401','Barcelona', 08013, 'Spain', '34932080404', 12, 8, 5, 2, 1, 950, 150, 'EUR', 1, '2020-07-18 08:04:50'),
-  (9, 10, 'Remus', 'Lupin','Piazza di Trevi 1', 'Rome',          00187,  'Italy',  '39060608',    6, 10, 5, 2, 2, 168, 95, 'EUR', 1, '2021-01-15 18:31:10'),
-  (10, 7, 'Rubeus', 'Hagrid', 'PalaceSquare 2', 'St Petersburg', 190000, 'Russia', '78127109079', 20, 9, 1, 1, 0, 54,  3, 'EUR', 0, '2019-05-09 07:56:31');
+  (1, 10, 'Remus', 'Lupin', 'Piazza di Trevi 1', 'Rome', 00187, 'Italy', '39060608', 10, 7, 1, 2, 1, 720, 'EUR', 1, '2021-01-15 09:25:20'),
+  (2, 5,  'Lord', 'Voldemort', 'Tverskoy District 1', 'Moscow', 103132, 'Russia', '74956970349', 18, 6, 2, 1, 0, 426, 'EUR', 0, '2020-06-04 05:26:29'),
+  (3, 3,  'Ron', 'Weasley','Panoramastrasse 1A', 'Berlin', 10178, 'Germany', '030247575875', 20, 1, 2, 1, 0, 108,'EUR', 1, '2019-05-05 11:26:56'),
+  (4, 10, 'Remus', 'Lupin','Piazza di Trevi 1','Rome', 00187, 'Italy', '39060608', 18, 4, 10, 1, 0, 1420,  'EUR', 0, '2020-01-21 12:20:50'),
+  (5, 4,  'Draco', 'Malfoy','20 W 34th St', 'New York', 10001, 'USA', '12127363100', 6, 5, 6, 2, 2, 1008, 'EUR', 0, '2013-09-23 14:45:01'),
+  (6, 2,  'Hermine','Granger', 'Karlstrasse 3','Vienna', 1010, 'Austria', '431711360', 13, 2, 3, 2, 0, 870, 'EUR', 1, '2021-03-26 08:01:01'), 
+  (7, 1,  'Harry', 'Potter', 'Westminster 1','London', 22222, 'England', '442072194272', 18, 3, 2, 1, 0, 284, 'EUR', 0, '2020-06-03 15:34:20'),
+  (8, 9,  'Severus', 'Snape','Carrer de Mallorca 401','Barcelona', 08013, 'Spain', '34932080404', 12, 8, 5, 2, 1, 950,  'EUR', 1, '2020-07-18 08:04:50'),
+  (9, 10, 'Remus', 'Lupin','Piazza di Trevi 1', 'Rome',          00187,  'Italy',  '39060608',    6, 10, 5, 2, 2, 168, 'EUR', 1, '2021-01-15 18:31:10'),
+  (10, 7, 'Rubeus', 'Hagrid', 'PalaceSquare 2', 'St Petersburg', 190000, 'Russia', '78127109079', 20, 9, 1, 1, 0, 54,  'EUR', 0, '2019-05-09 07:56:31');
   
 
 UNLOCK TABLES;
@@ -320,6 +319,8 @@ CREATE TABLE order_details (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   order_id BIGINT UNSIGNED NOT NULL,
   service_name VARCHAR (145) NOT NULL, -- breakfast, mini-bar
+  extra_amount INT(10) DEFAULT NULL,
+  currency VARCHAR(10) NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   INDEX fk_order_order_details_idx (order_id),
@@ -331,9 +332,9 @@ LOCK TABLES order_details WRITE;
 INSERT INTO 
   order_details
 VALUES 
-  (1, 8, 'breakfast', '2020-07-18 08:04:50'),
-  (2, 9, 'breakfast', '2021-01-15 18:31:10'),
-  (3, 10, 'mini-bar coca cola','2019-05-09 07:56:31');
+  (1, 8, 'breakfast', '150', 'EUR', '2020-07-18 08:04:50'),
+  (2, 9, 'breakfast', '95', 'EUR', '2021-01-15 18:31:10'),
+  (3, 10, 'mini-bar coca cola', '3', 'EUR', '2019-05-09 07:56:31');
 UNLOCK TABLES; 
 
 
