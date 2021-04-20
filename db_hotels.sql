@@ -1,5 +1,7 @@
 
 UNLOCK TABLES;
+DROP TABLE IF EXISTS rooms;
+DROP TABLE IF EXISTS room_details;
 DROP TABLE IF EXISTS order_details;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS orders;
@@ -172,6 +174,41 @@ VALUES
   (20, 9, 'gold.jpg', 45927459, '2017-03-06 04:59:36');
 
 UNLOCK TABLES;
+LOCK TABLES room_details WRITE;
+
+INSERT INTO 
+  room_details
+VALUES
+  (1, 'single', 1, '87 EUR',  '50 EUR',  '99 EUR',  '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (2, 'king',  2,  '230 EUR', '180 EUR', '260 EUR', '2017-10-25 16:16:27', '2020-11-25 11:16:28'),
+  (3, 'double', 1, '120 EUR', '90 EUR',  '158 EUR', '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (4, 'double+1child', 2, '134 EUR', '60 EUR',  '180 EUR', '2020-09-25 16:16:27', '2020-11-25 11:16:28'),
+  (5, 'single', 1, '245 EUR', '160 EUR', '280 EUR', '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (6, 'double+2children', 3, '54 EUR',  '30 EUR',  '67 EUR',  '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (7, 'double', 1, '132 EUR', '88 EUR', '170 EUR', '2019-01-25 16:16:27', '2020-11-25 11:16:28'),
+  (8, 'double', 1, '304 EUR', '207 EUR', '320 EUR', '2019-11-25 16:16:27', '2020-06-25 11:16:28'),
+  (9, 'single', 1,  '123 EUR', '90 EUR', '140 EUR', '2019-07-25 16:16:27', '2020-01-25 11:16:28'),
+  (10, 'double+1child', 2, '260 EUR', '200 EUR', '280 EUR', '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (11, 'single', 1, '67 EUR', '50 EUR', '88 EUR', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (12, 'double+2children', 3, '76 EUR', '38 EUR', '99 EUR', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (13,'double', 1,  '125 EUR', '85 EUR', '145 EUR', '2018-03-09 16:16:27', '2021-03-25 11:16:28'),
+  (14, 'single', 1, '99 EUR', '34 EUR', '102 EUR', '2018-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (15, 'double', 1, '111 EUR', '88 EUR', '122 EUR', '2019-08-09 16:16:27', '2021-03-25 11:16:28'),
+  (16,  'single', 1, '154 EUR', '121 EUR', '165 EUR', '2018-07-09 18:16:27', '2021-04-01 10:16:28'),
+  (17, 'double', 1, '142 EUR', '90 EUR', '190 EUR', '2017-04-09 16:16:27', '2021-03-25 11:16:28'),
+  (18,'double', 1,  '142 EUR', '85 EUR', '150 EUR', '2018-03-09 16:16:27', '2021-03-01 11:16:28'),
+  (19,'king', 1, '309 EUR', '50 EUR', '99 EUR', '2015-03-09 16:16:27', '2020-03-01 11:16:28'),
+  (20, 'single', 1, '54 EUR', '35 EUR', '78 EUR', '2019-03-09 16:16:27', '2021-01-01 11:16:28'),
+  (21, 'single', 1,  '54 EUR', '35 EUR', '78 EUR', '2019-03-08 16:16:27', '2021-03-03 11:16:28'),
+  (22, 'king', 1, '106 EUR', '70 EUR', '120 EUR', '2020-10-09 16:16:27', '2021-03-11 11:16:28'),
+  (23,'double', 1, '90 EUR', '60 EUR', '99 EUR', '2020-10-10 16:16:27', '2021-02-02 11:16:28'),
+  (24,'single', 1, '34 EUR', '20 EUR', '40 EUR', '2019-09-09 16:16:27', '2021-01-11 11:16:28'),
+  (25,'double+2children', 3,  '70 EUR', '45 EUR', '80 EUR', '2020-12-01 16:16:27', '2021-03-03 11:16:28');
+  
+UNLOCK TABLES;
+
+
+
 
 DROP TABLE IF EXISTS rooms;
 
@@ -179,17 +216,13 @@ CREATE TABLE rooms (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   hotel_id BIGINT UNSIGNED NOT NULL,
   name VARCHAR(40) NOT NULL,
+  room_details_id BIGINT UNSIGNED NOT NULL,
   description VARCHAR(255) DEFAULT NULL, 
-  number_of_bed INT NOT NULL,
-  type_of_bed VARCHAR(20) NOT NULL, 
-  price_per_adult VARCHAR(10) NOT NULL,
-  price_per_child VARCHAR(10) NOT NULL,
-  price_weekend_edition VARCHAR(10) NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  CONSTRAINT fk_hotels_room FOREIGN KEY (hotel_id) REFERENCES  hotels (id)
-  
+  CONSTRAINT fk_hotels_room FOREIGN KEY (hotel_id) REFERENCES  hotels (id),
+  CONSTRAINT fk__room_details FOREIGN KEY (room_details_id) REFERENCES  room_details (id)
 );
 
 
@@ -198,35 +231,36 @@ LOCK TABLES rooms WRITE;
 INSERT INTO 
   rooms
 VALUES
-  (1, 6, '34',     	'0',                                                                     1, 'single', '87 EUR',  '50 EUR',  '99 EUR',  '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
-  (2, 8, 'Italy', 	'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi',    2, 'king',   '230 EUR', '180 EUR', '260 EUR', '2017-10-25 16:16:27', '2020-11-25 11:16:28'),
-  (3, 4, '585',		'Flat-screen TV. Soundproof. Coffee machine',                            2, 'single', '120 EUR', '90 EUR',  '158 EUR', '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
-  (4, 7, '405',     'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi',    3, 'single', '134 EUR', '60 EUR',  '180 EUR', '2020-09-25 16:16:27', '2020-11-25 11:16:28'),
-  (5, 1, '69', 		'Garden view, Air conditioning',                                         1, 'single', '245 EUR', '160 EUR', '280 EUR', '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
-  (6, 7, '209', 	'Flat-screen TV. Soundproof. Coffee machine',                            4, 'single', '54 EUR',  '30 EUR',  '67 EUR',  '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
-  (7, 5, '31', 		'Garden view, Air conditioning',                                         2, 'double', '132 EUR', '88 EUR', '170 EUR', '2019-01-25 16:16:27', '2020-11-25 11:16:28'),
-  (8, 9, '108',     'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi',    2, 'single', '304 EUR', '207 EUR', '320 EUR', '2019-11-25 16:16:27', '2020-06-25 11:16:28'),
-  (9, 4, '666',     'Garden view, Air conditioning, Coffee machine', 			             1, 'single', '123 EUR', '90 EUR', '140 EUR', '2019-07-25 16:16:27', '2020-01-25 11:16:28'),
-  (10, 9, '45',     'Flat-screen TV. Soundproof. Coffee machine', 			                 3, 'single', '260 EUR', '200 EUR', '280 EUR', '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
-  (11, 6, '23',     'These contemporary rooms are decorated with stone walls and parquet floors, featuring a small Zen seasonal swimming pool', 1, 'single', '67 EUR', '50 EUR', '88 EUR', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
-  (12, 3, 'Lavender','Garden view, Air conditioning', 						                 3, 'single', '76 EUR', '38 EUR', '99 EUR', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
-  (13, 10, '57', 	'Flat-screen TV. Soundproof. Coffee machine', 			                 2, 'double', '125 EUR', '85 EUR', '145 EUR', '2018-03-09 16:16:27', '2021-03-25 11:16:28'),
-  (14, 1, '41', 	'0',                                   					                 1, 'single', '99 EUR', '34 EUR', '102 EUR', '2018-02-09 16:16:27', '2021-01-25 11:16:28'),
-  (15, 8, 'Spain', 	'Street view, Air conditioning, Coffee machine', 						 2, 'double', '111 EUR', '88 EUR', '122 EUR', '2019-08-09 16:16:27', '2021-03-25 11:16:28'),
-  (16, 2, '80',     'Coffee machine, Soundproof', 																								1, 'single', '154 EUR', '121 EUR', '165 EUR', '2018-07-09 18:16:27', '2021-04-01 10:16:28'),
-  (17, 3, 'Green', 	'Coffee machine, Garden view', 																								2, 'double', '142 EUR', '90 EUR', '190 EUR', '2017-04-09 16:16:27', '2021-03-25 11:16:28'),
-  (18, 2, '87', 	'Flat-screen TV. Soundproof. Coffee machine', 																				1, 'single', '142 EUR', '85 EUR', '150 EUR', '2018-03-09 16:16:27', '2021-03-01 11:16:28'),
-  (19, 5, '209', 	'0', 																														2, 	'king', '309 EUR', '50 EUR', '99 EUR', '2015-03-09 16:16:27', '2020-03-01 11:16:28'),
-  (20, 3, 'Red', 	'Coffee machine, Garden view', 																								1, 'single', '54 EUR', '35 EUR', '78 EUR', '2019-03-09 16:16:27', '2021-01-01 11:16:28'),
-  (21, 9, '608', 	'These contemporary rooms are decorated with stone walls and parquet floors, featuring a small Zen seasonal swimming pool', 1, 'single', '54 EUR', '35 EUR', '78 EUR', '2019-03-08 16:16:27', '2021-03-03 11:16:28'),
-  (22, 3, 'Gold', 	'Coffee machine,  Soundproof', 																								2, 'king', '106 EUR', '70 EUR', '120 EUR', '2020-10-09 16:16:27', '2021-03-11 11:16:28'),
-  (23, 4, '701', 	'Flat-screen TV. Soundproof. Coffee machine', 																				2, 'double', '90 EUR', '60 EUR', '99 EUR', '2020-10-10 16:16:27', '2021-02-02 11:16:28'),
-  (24, 1, '39', 	'0', 																														1, 'single', '34 EUR', '20 EUR', '40 EUR', '2019-09-09 16:16:27', '2021-01-11 11:16:28'),
-  (25, 5, '606', 	'Air conditioning. Attached bathroom.Free WiFi', 																			3, 'single', '70 EUR', '45 EUR', '80 EUR', '2020-12-01 16:16:27', '2021-03-03 11:16:28');
-  
+  (1, 6, '34', 1, Null, '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (2, 8, 'Italy', 2, 'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi', '2017-10-25 16:16:27', '2020-11-25 11:16:28'),
+  (3, 4, '585', 3, 'Flat-screen TV. Soundproof. Coffee machine','2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (4, 7, '405', 4,   'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi', '2020-09-25 16:16:27', '2020-11-25 11:16:28'),
+  (5, 1, '69',  5,  'Garden view, Air conditioning', '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (6, 7, '209', 6,  'Flat-screen TV. Soundproof. Coffee machine',   '2019-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (7, 5, '31', 7, 'Garden view, Air conditioning', '2019-01-25 16:16:27', '2020-11-25 11:16:28'),
+  (8, 9, '108', 8,    'Bathtub, Air conditioning, Attached bathroom, Soundproof,Free WiFi', '2019-11-25 16:16:27', '2020-06-25 11:16:28'),
+  (9, 4, '666',  9,  'Garden view, Air conditioning, Coffee machine',  '2019-07-25 16:16:27', '2020-01-25 11:16:28'),
+  (10, 9, '45', 10,    'Flat-screen TV. Soundproof. Coffee machine', '2016-11-25 16:16:27', '2020-11-25 11:16:28'),
+  (11, 6, '23', 11,     'These contemporary rooms are decorated with stone walls and parquet floors, featuring a small Zen seasonal swimming pool', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (12, 3, 'Lavender', 12, 'Garden view, Air conditioning', '2019-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (13, 10, '57', 13,    'Flat-screen TV. Soundproof. Coffee machine', '2018-03-09 16:16:27', '2021-03-25 11:16:28'),
+  (14, 1, '41', 14, Null,  '2018-02-09 16:16:27', '2021-01-25 11:16:28'),
+  (15, 8, 'Spain', 15,  'Street view, Air conditioning, Coffee machine',                          '2019-08-09 16:16:27', '2021-03-25 11:16:28'),
+  (16, 2, '80',  16,  'Coffee machine, Soundproof', '2018-07-09 18:16:27', '2021-04-01 10:16:28'),
+  (17, 3, 'Green', 17,  'Coffee machine, Garden view',  '2017-04-09 16:16:27', '2021-03-25 11:16:28'),
+  (18, 2, '87',18,  'Flat-screen TV. Soundproof. Coffee machine', '2018-03-09 16:16:27', '2021-03-01 11:16:28'),
+  (19, 5, '209', 19,    NULL,  '2015-03-09 16:16:27', '2020-03-01 11:16:28'),
+  (20, 3, 'Red', 20,    'Coffee machine, Garden view',   '2019-03-09 16:16:27', '2021-01-01 11:16:28'),
+  (21, 9, '608', 21,    'These contemporary rooms are decorated with stone walls and parquet floors, featuring a small Zen seasonal swimming pool', '2019-03-08 16:16:27', '2021-03-03 11:16:28'),
+  (22, 3, 'Gold', 22,   'Coffee machine,  Soundproof',  '2020-10-09 16:16:27', '2021-03-11 11:16:28'),
+  (23, 4, '701', 23,    'Flat-screen TV. Soundproof. Coffee machine',                                                                               '2020-10-10 16:16:27', '2021-02-02 11:16:28'),
+  (24, 1, '39', 24, NULL, '2019-09-09 16:16:27', '2021-01-11 11:16:28'),
+  (25, 5, '606', 25,    'Air conditioning. Attached bathroom.Free WiFi', '2020-12-01 16:16:27', '2021-03-03 11:16:28');
+
+
+
 
 UNLOCK TABLES;
-SELECT * FROM rooms;
 DROP TABLE IF EXISTS bookings;
 
 CREATE TABLE bookings (
