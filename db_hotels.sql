@@ -107,7 +107,7 @@ CREATE TABLE hotel_managers (
   password_hash CHAR(65) DEFAULT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id, hotel_id),
+  PRIMARY KEY (id),
   UNIQUE KEY email_unique (email),
   UNIQUE KEY phone_unique (phone),
   INDEX fk_hotel_manager_idx (hotel_id),
@@ -233,10 +233,10 @@ CREATE TABLE bookings (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   room_id BIGINT UNSIGNED NOT NULL,
   guest_id BIGINT UNSIGNED NOT NULL,
-  guest_count INT(20) UNSIGNED NOT NULL,
+  guest_count SMALLINT UNSIGNED NOT NULL,
   check_in DATETIME NOT NULL,
   check_out DATETIME NOT NULL,
-  status VARCHAR(10) NOT NULL, -- active/canceled
+  status ENUM ('active', 'canceled') NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -343,13 +343,15 @@ CREATE TABLE reviews (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   from_guest_id BIGINT UNSIGNED NOT NULL,
   to_hotel_id BIGINT UNSIGNED NOT NULL,
+  order_id BIGINT UNSIGNED NOT NULL,
   comment VARCHAR (255) NOT NULL,
   grade INT(1) UNSIGNED DEFAULT NULL, -- rating
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
+  PRIMARY KEY (hotel_id, guest_id),
   INDEX fk_reviews_to_hotel_idx (to_hotel_id),
   INDEX fk_reviews_from_guest_idx (from_guest_id),
   CONSTRAINT fk_reviews_to_hotel FOREIGN KEY (to_hotel_id) REFERENCES  hotels (id),
+  CONSTRAINT fk_orders FOREIGN KEY (order_id) REFERENCES  orders (id),
   CONSTRAINT fk_from_guest FOREIGN KEY (from_guest_id) REFERENCES  guests (id),
   CONSTRAINT grade CHECK (REGEXP_LIKE(grade, '^[1-5]{1}$'))
 );
@@ -362,16 +364,16 @@ LOCK TABLES reviews WRITE;
 INSERT INTO 
   reviews
 VALUES 
-  (1, 10, 9, 'The room was amazing. The place, the nature. A well needed calm', 5, '2020-06-02 18:10:40'),
-  (2, 5, 2, 'I am so glad we found this place for our stay in Barcelona!',  5, '2020-06-04 10:26:29'),
-  (3, 3, 3, 'Great!',  2, '2019-05-05 20:26:56'),
-  (4, 10, 2, 'Bad service', 1, '2020-01-22 10:20:50'),
-  (5, 4, 7, 'Facilities, bed quality, very friendly and helpful staff, decor, location, everything',  5, '2013-09-24 16:45:01'),
-  (6, 2, 10, 'Great location, perfect for exploring. Lovely room',  4, '2021-03-26 10:01:01'),
-  (7, 1, 2, 'Great location. Very central for exploring all parts of Venice. Super room. Very comfortable and had everything we needed. Good restaurant.',  5, '2020-06-03 18:34:20'),
-  (8, 9, 3, 'Good location, easy to get to Vatican by bus. Rooms are very comfortable and well equipped, good breakfast and very good looking camp! Will consider to stay again with kids!', 4, '2020-07-18 12:04:50'),
-  (9, 10, 7, 'The food was wonderful. Having the jazz club in the hotel was so convenient. Everything was perfection.',  5, '2021-01-16 20:31:10'),
-  (10, 7, 3, 'Bad internet',  1, '2019-05-09 08:56:31');
+  (1, 10, 9, 1, 'The room was amazing. The place, the nature. A well needed calm', 5, '2020-06-02 18:10:40'),
+  (2, 5, 2, 2, 'I am so glad we found this place for our stay in Barcelona!',  5, '2020-06-04 10:26:29'),
+  (3, 3, 3, 3, 'Great!',  2, '2019-05-05 20:26:56'),
+  (4, 10, 2, 4,  'Bad service', 1, '2020-01-22 10:20:50'),
+  (5, 4, 7, 5, 'Facilities, bed quality, very friendly and helpful staff, decor, location, everything',  5, '2013-09-24 16:45:01'),
+  (6, 2, 10, 6, 'Great location, perfect for exploring. Lovely room',  4, '2021-03-26 10:01:01'),
+  (7, 1, 2, 7, 'Great location. Very central for exploring all parts of Venice. Super room. Very comfortable and had everything we needed. Good restaurant.',  5, '2020-06-03 18:34:20'),
+  (8, 9, 3, 8, 'Good location, easy to get to Vatican by bus. Rooms are very comfortable and well equipped, good breakfast and very good looking camp! Will consider to stay again with kids!', 4, '2020-07-18 12:04:50'),
+  (9, 10, 7, 9, 'The food was wonderful. Having the jazz club in the hotel was so convenient. Everything was perfection.',  5, '2021-01-16 20:31:10'),
+  (10, 7, 3, 10 'Bad internet',  1, '2019-05-09 08:56:31');
   
 UNLOCK TABLES;
 
