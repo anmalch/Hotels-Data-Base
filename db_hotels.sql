@@ -385,7 +385,7 @@ CREATE TABLE bookmarks (
   guest_id  BIGINT UNSIGNED NOT NULL,
   comment VARCHAR (255) DEFAULT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-  PRIMARY KEY (id),
+  PRIMARY KEY (hotel_id, guest_id),
   CONSTRAINT fk_bookmarks_hotel FOREIGN KEY (hotel_id) REFERENCES  hotels (id),
   CONSTRAINT fk_bookmarks_from_guest FOREIGN KEY (guest_id) REFERENCES  guests (id)
 );
