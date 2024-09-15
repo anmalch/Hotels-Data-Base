@@ -1,2 +1,2 @@
 # Hotels-Data-Base
-База данных бронирования отелей содержит информацию об отелях, гостях, заказах, а также отзывы на отели от гостей.
+The hotel booking database contains information about hotels, guests, bookings, as well as guest reviews of the hotels.
